@@ -23,7 +23,6 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(Attack2());
 
         cooldownTimer += Time.deltaTime;
-        print(cooldownTimer);
     }
 
     private IEnumerator Attack2()

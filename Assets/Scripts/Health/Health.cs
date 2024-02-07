@@ -45,7 +45,7 @@ public class Health : MonoBehaviour
     }
     private IEnumerator Invunerability()
     {
-        Physics2D.IgnoreLayerCollision(10, 11, true);
+        Physics2D.IgnoreLayerCollision(10, 12, true);
         for (int i = 0; i < numberOfFlashes/2; i++)
         {
             spriteRend.color = new Color(1, 0.8160377f, 0.8160377f, 1);
@@ -61,7 +61,7 @@ public class Health : MonoBehaviour
             spriteRend.color = Color.white;
             yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
         }
-        Physics2D.IgnoreLayerCollision(10, 11, false);
+        Physics2D.IgnoreLayerCollision(10, 12, false);
     }
 
     public bool IsMax()
