@@ -28,7 +28,7 @@ public class Firetrap : MonoBehaviour
             if (!activated && !triggered)
                 StartCoroutine(ActivateTrap());
             else
-                collision.GetComponent<Health>().TakeDamage(1);
+                collision.GetComponent<PlayerHealth>().TakeDamage(1);
         }
     }
     private IEnumerator ActivateTrap()

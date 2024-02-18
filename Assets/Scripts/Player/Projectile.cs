@@ -19,8 +19,6 @@ public class Projectile : MonoBehaviour
     }
     private void Update()
     {
-        if (hit) return;
-        float movementSpeed = speed * Time.deltaTime * direction;
         //transform.Translate(movementSpeed, 0, 0);
 
         lifetime += Time.deltaTime;
@@ -32,8 +30,7 @@ public class Projectile : MonoBehaviour
         if (collision.tag == "Player" || collision.tag == "Enemy")
         {
             hit = true;
-            collision.GetComponent<Health>()?.TakeDamage(1);
-            Deactivate();
+            collision.GetComponent<PlayerHealth>()?.TakeDamage(1);
         }
         if (collision.tag == "Wall")
         {

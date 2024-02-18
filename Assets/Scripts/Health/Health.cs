@@ -1,71 +1,89 @@
-using UnityEngine;
+﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using UnityEngine;
 
 public class Health : MonoBehaviour
-{
-    [Header ("Health")]
-    [SerializeField] private float startingHealth;
-    public float currentHealth { get; private set; }
-    private Animator anim;
-    private bool dead;
-
-    [Header("iFrames")]
-    [SerializeField] private float iFramesDuration;
-    [SerializeField] private int numberOfFlashes;
-    private SpriteRenderer spriteRend;
-
-    private void Awake()
     {
-        currentHealth = startingHealth;
-        anim = GetComponent<Animator>();
-        spriteRend = GetComponent<SpriteRenderer>();
+        [Header("Health")]
+        [SerializeField] private float maxHealth;
+        public float currentHealth { get; private set; }
+        protected Animator anim;
+        protected bool dead;
+
+        [Header("iFrames")]
+        [SerializeField] private float iFramesDuration;
+        [SerializeField] private int numberOfFlashes;
+        private SpriteRenderer spriteRend;
+        private bool isInvulnerable;
+        protected GameObject MovementController;
+
+        protected void Awake()
+        {
+            currentHealth = maxHealth;
+            anim = GetComponent<Animator>();
+            spriteRend = GetComponent<SpriteRenderer>();
+        }
+
+    private void Update()
+    {
+        print(currentHealth);
     }
     public void TakeDamage(float _damage)
-    {
-        currentHealth = Mathf.Clamp(currentHealth - _damage, 0, startingHealth);
-
-        if (currentHealth > 0)
         {
-            anim.SetBool("Hurt", true);
-            StartCoroutine(Invunerability());
-        }
-        else
-        {
-            if (!dead)
+            if (!isInvulnerable)
             {
-                anim.SetTrigger("die");
-                GetComponent<PlayerMovement>().enabled = false;
-                dead = true;
+                currentHealth = Mathf.Clamp(currentHealth - _damage, 0, maxHealth);
+
+                if (currentHealth > 0)
+                {
+                    anim.SetBool("Hurt", true);
+                    StartCoroutine(Invunerability());
+                }
+                else
+                {
+                    if (!dead)
+                    {
+                        Death();
+                    }
+                }
             }
         }
-    }
-    public void AddHealth(float _value)
-    {
-        currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
-    }
-    private IEnumerator Invunerability()
-    {
-        Physics2D.IgnoreLayerCollision(10, 12, true);
-        for (int i = 0; i < numberOfFlashes/2; i++)
+        public void AddHealth(float _value)
         {
-            spriteRend.color = new Color(1, 0.8160377f, 0.8160377f, 1);
-            yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
-            spriteRend.color = Color.white;
-            yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+            currentHealth = Mathf.Clamp(currentHealth + _value, 0, maxHealth);
         }
-        anim.SetBool("Hurt", false);
-        for (int i = numberOfFlashes/2; i < numberOfFlashes; i++)
+        private IEnumerator Invunerability()
         {
-            spriteRend.color = new Color(1, 0.8160377f, 0.8160377f, 1);
-            yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
-            spriteRend.color = Color.white;
-            yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+            isInvulnerable = true;
+            for (int i = 0; i < numberOfFlashes / 2; i++)
+            {
+                spriteRend.color = new Color(1, 0.8160377f, 0.8160377f, 1);
+                yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+                spriteRend.color = Color.white;
+                yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+            }
+            anim.SetBool("Hurt", false);
+            for (int i = numberOfFlashes / 2; i < numberOfFlashes; i++)
+            {
+                spriteRend.color = new Color(1, 0.8160377f, 0.8160377f, 1);
+                yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+                spriteRend.color = Color.white;
+                yield return new WaitForSeconds(iFramesDuration / (numberOfFlashes * 2));
+            }
+            isInvulnerable = false;
         }
-        Physics2D.IgnoreLayerCollision(10, 12, false);
-    }
 
-    public bool IsMax()
-    {
-        return currentHealth == startingHealth;
-    }
+        public bool IsMax()
+        {
+            return currentHealth == maxHealth;
+        }
+
+        virtual protected IEnumerator Death()
+        {
+        yield return new WaitForSeconds(0);
+        }
 }
