@@ -10,6 +10,7 @@ public class EnemyHealth : Health
     }
     override protected void Death()
     {
+        base.Death();
         anim.SetTrigger("die");
         GetComponent<MelleEnemyAI>().enabled = false;
         GetComponent<AIPath>().enabled = false;

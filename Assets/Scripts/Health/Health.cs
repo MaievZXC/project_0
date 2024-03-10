@@ -20,7 +20,11 @@ public class Health : MonoBehaviour
         private SpriteRenderer spriteRend;
         private bool isInvulnerable;
 
-        protected void Awake()
+    [Header("Sound")]
+    [SerializeField] private AudioClip hitSound;
+    [SerializeField] private AudioClip deathSound;
+
+    protected void Awake()
         {
             dead = false;
             currentHealth = maxHealth;
@@ -37,6 +41,7 @@ public class Health : MonoBehaviour
 
                 if (currentHealth > 0)
                 {
+                    SoundManager.instance.PlaySound(hitSound);
                     anim.SetBool("Hurt", true);
                     StartCoroutine(Invunerability());
                 }
@@ -81,5 +86,6 @@ public class Health : MonoBehaviour
 
         virtual protected void Death()
         {
-        }
+        SoundManager.instance.PlaySound(deathSound);
+    }
 }

@@ -154,6 +154,8 @@ MonoBehaviour:
   maxHealth: 6
   iFramesDuration: 2
   numberOfFlashes: 4
+  hitSound: {fileID: 8300000, guid: 41b3db18e389a464da57cc13049e290f, type: 3}
+  deathSound: {fileID: 8300000, guid: 13ab71b1338584b4b8031373d7fdeacf, type: 3}
 --- !u!114 &208187434618832394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,7 +176,6 @@ MonoBehaviour:
   boxCollider: {fileID: 208187434618832392}
   range: 1
   area: {fileID: 0}
-  target: {fileID: 0}
   speed: 0
 --- !u!114 &208187434618832389
 MonoBehaviour:

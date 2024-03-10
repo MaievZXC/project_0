@@ -6,6 +6,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private float attackCooldown;
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject[] Waves;
+    [SerializeField] private AudioClip projectileSound;
 
     private Animator anim;
     private PlayerMovement playerMovement;
@@ -27,6 +28,7 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator Attack2()
     {
+        SoundManager.instance.PlaySound(projectileSound);
         anim.SetTrigger("attack_2");
         cooldownTimer = 0;
         playerMovement.setVelosity0();
