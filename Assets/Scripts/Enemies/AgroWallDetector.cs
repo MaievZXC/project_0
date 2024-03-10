@@ -21,12 +21,18 @@ public class AgroWallDetector : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        inArea = true;
+        if (collision.tag == "Player")
+        {
+            inArea = true;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        inArea = false;
+        if (collision.tag == "Player")
+        {
+            inArea = false;
+        }
     }
 
     public bool GetInArea()

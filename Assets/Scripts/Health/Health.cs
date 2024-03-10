@@ -19,24 +19,21 @@ public class Health : MonoBehaviour
         [SerializeField] private int numberOfFlashes;
         private SpriteRenderer spriteRend;
         private bool isInvulnerable;
-        protected GameObject MovementController;
 
         protected void Awake()
         {
+            dead = false;
             currentHealth = maxHealth;
             anim = GetComponent<Animator>();
             spriteRend = GetComponent<SpriteRenderer>();
         }
 
-    private void Update()
-    {
-        print(currentHealth);
-    }
+
     public void TakeDamage(float _damage)
         {
             if (!isInvulnerable)
             {
-                currentHealth = Mathf.Clamp(currentHealth - _damage, 0, maxHealth);
+            currentHealth = Mathf.Clamp(currentHealth - _damage, 0, maxHealth);
 
                 if (currentHealth > 0)
                 {
@@ -82,8 +79,7 @@ public class Health : MonoBehaviour
             return currentHealth == maxHealth;
         }
 
-        virtual protected IEnumerator Death()
+        virtual protected void Death()
         {
-        yield return new WaitForSeconds(0);
         }
 }

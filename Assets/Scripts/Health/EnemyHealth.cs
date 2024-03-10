@@ -5,14 +5,16 @@ using Pathfinding;
 
 public class EnemyHealth : Health
 {
-
-    override protected IEnumerator Death()
+    protected void Update()
+    {
+    }
+    override protected void Death()
     {
         anim.SetTrigger("die");
         GetComponent<MelleEnemyAI>().enabled = false;
         GetComponent<AIPath>().enabled = false;
         dead = true;
-        yield return new WaitForSeconds(5);
-        Destroy(this);
+        //возможно стоит Deactivate()
+        Destroy(gameObject, 5);
     }
 }

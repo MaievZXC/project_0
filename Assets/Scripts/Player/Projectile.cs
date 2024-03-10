@@ -30,7 +30,7 @@ public class Projectile : MonoBehaviour
         if (collision.tag == "Player" || collision.tag == "Enemy")
         {
             hit = true;
-            collision.GetComponent<PlayerHealth>()?.TakeDamage(1);
+            collision.GetComponent<EnemyHealth>().TakeDamage(1);
         }
         if (collision.tag == "Wall")
         {

@@ -12,14 +12,13 @@ public class MelleEnemyAI : MonoBehaviour
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private float range;
     [SerializeField] private GameObject area;
-    [SerializeField] private GameObject target;
 
     private float currentAttackCooldawn = -1000;
     [SerializeField] private float speed;
 
     
     
-    Rigidbody2D rb;
+
     Animator anim;
 
 
@@ -31,7 +30,6 @@ public class MelleEnemyAI : MonoBehaviour
 
     private void Start()
     {
-        rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
 
     }
@@ -39,14 +37,12 @@ public class MelleEnemyAI : MonoBehaviour
 
     private void Update()
     {
-        contactDamage();
+        СontactDamage();
 
         hit = Physics2D.BoxCast(boxCollider.bounds.center + transform.right * range * Mathf.Sign(transform.localScale.x),
             new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y, boxCollider.bounds.size.z), 0, Vector2.left, 0, playerLayer);
         currentFramePosX = transform.position.x;
 
-        //его двигает не каждый кадр(
-        print(currentFramePosX - prevFramePosX);
         anim.SetBool("Walk", true);
         if (currentFramePosX - prevFramePosX > 0.0005f)
         {
@@ -104,6 +100,7 @@ public class MelleEnemyAI : MonoBehaviour
     private IEnumerator Attack()
     {
         //anim.SetTrigger("attack");
+        //Если захочу сделать чтобы атака сбивалась надо будет добавить проверку на Hurt
         yield return new WaitForSeconds(attackCooldawn);
         if(hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
         {
@@ -112,7 +109,7 @@ public class MelleEnemyAI : MonoBehaviour
 
     }
 
-    private void contactDamage()
+    private void СontactDamage()
     {
         RaycastHit2D contactDamage = Physics2D.BoxCast(boxCollider.bounds.center,
             new Vector3(boxCollider.bounds.size.x, boxCollider.bounds.size.y, boxCollider.bounds.size.z), 0, Vector2.left, 0, playerLayer);
