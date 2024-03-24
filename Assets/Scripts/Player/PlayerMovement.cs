@@ -6,12 +6,15 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float coueteeTime;
+    private float coueteeTimeTimer = 0;
     private Rigidbody2D body;
     private Animator anim;
     private BoxCollider2D boxCollider;
     private float wallJumpCooldown;
     private float horizontalInput;
     private PlayerAttack playerAttack;
+
 
     private void Awake()
     {
@@ -34,10 +37,19 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("grounded", isGrounded());
         anim.SetBool("fall", body.velocity.y < 0);
 
+        if (!isGrounded())
+        {
+            coueteeTimeTimer -= Time.deltaTime;
+        }
+        else
+        {
+            coueteeTimeTimer = coueteeTime; 
+        }
+
         //Wall jump logicS
         if (wallJumpCooldown > 0.2f)
         {
-            if (playerAttack.GetCooldawn2() * 1.1f < playerAttack.GetTimer())
+            if (playerAttack.GetCooldawn() * 1.1f < playerAttack.GetTimer())
             {
                 body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
                 if (horizontalInput > 0.01f)
@@ -61,13 +73,11 @@ public class PlayerMovement : MonoBehaviour
             wallJumpCooldown += Time.deltaTime;
     }
 
+
+    //добавить погрешность при прыжках с уступа
     private void Jump()
     {
-        if (isGrounded())
-        {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
-        }
-        else if (onWall() && !isGrounded())
+        if (onWall() && !isGrounded())
         {
             if (horizontalInput == 0)
             {
@@ -80,6 +90,11 @@ public class PlayerMovement : MonoBehaviour
 
             wallJumpCooldown = 0;
         }
+        else if (coueteeTimeTimer > 0)
+        {
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
+        }
+        coueteeTimeTimer = coueteeTime;
     }
 
 

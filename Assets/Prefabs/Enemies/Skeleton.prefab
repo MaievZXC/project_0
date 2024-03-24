@@ -151,9 +151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c558b3b520ef0ac42a70041220757122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 6
-  iFramesDuration: 2
-  numberOfFlashes: 4
+  maxHealth: 2
+  iFramesDuration: 1
+  numberOfFlashes: 3
   hitSound: {fileID: 8300000, guid: 41b3db18e389a464da57cc13049e290f, type: 3}
   deathSound: {fileID: 8300000, guid: 13ab71b1338584b4b8031373d7fdeacf, type: 3}
 --- !u!114 &208187434618832394
@@ -168,7 +168,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9ba182feafdd9f429920a18210fe1c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldawn: 0.5833333
+  attackCooldawn: 2
+  attackAnimationTime: 0.5833333
   damage: 1
   playerLayer:
     serializedVersion: 2

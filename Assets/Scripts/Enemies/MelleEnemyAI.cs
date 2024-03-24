@@ -7,6 +7,7 @@ using UnityEngineInternal;
 public class MelleEnemyAI : MonoBehaviour
 {
     [SerializeField] private float attackCooldawn;
+    [SerializeField] private float attackAnimationTime;
     [SerializeField] private float damage;
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private BoxCollider2D boxCollider;
@@ -14,10 +15,9 @@ public class MelleEnemyAI : MonoBehaviour
     [SerializeField] private GameObject area;
 
     private float currentAttackCooldawn = -1000;
-    [SerializeField] private float speed;
 
-    
-    
+
+
 
     Animator anim;
 
@@ -62,9 +62,8 @@ public class MelleEnemyAI : MonoBehaviour
                 GetComponent<AIPath>().enabled = false;
                 if (currentAttackCooldawn < 0)
                 {
-                    anim.SetTrigger("Attack");
-                    StartCoroutine(Attack());
                     currentAttackCooldawn = attackCooldawn;
+                    StartCoroutine(Attack());
                 }
             }
             else
@@ -99,10 +98,17 @@ public class MelleEnemyAI : MonoBehaviour
 
     private IEnumerator Attack()
     {
-        //anim.SetTrigger("attack");
+        anim.SetTrigger("Attack");
         //≈сли захочу сделать чтобы атака сбивалась надо будет добавить проверку на Hurt
-        yield return new WaitForSeconds(attackCooldawn);
-        if(hit.collider != null && hit.collider.gameObject.CompareTag("Player"))
+        yield return new WaitForSeconds(attackAnimationTime);
+        if(hit.collider != null)
+        {
+            hit.collider.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
+        }
+        anim.SetTrigger("Attack");
+        //≈сли захочу сделать чтобы атака сбивалась надо будет добавить проверку на Hurt
+        yield return new WaitForSeconds(attackAnimationTime);
+        if (hit.collider != null)
         {
             hit.collider.gameObject.GetComponent<PlayerHealth>().TakeDamage(damage);
         }

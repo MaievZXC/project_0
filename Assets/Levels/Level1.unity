@@ -3617,10 +3617,6 @@ PrefabInstance:
       propertyPath: target
       value: 
       objectReference: {fileID: 1088074351}
-    - target: {fileID: 208187434618832395, guid: ffba0a8463983574ea84f9206a13b6e8, type: 3}
-      propertyPath: maxHealth
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ffba0a8463983574ea84f9206a13b6e8, type: 3}
 --- !u!1 &765746701
@@ -5810,6 +5806,7 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 512
+  coueteeTime: 1
 --- !u!95 &1088074357
 Animator:
   serializedVersion: 5
@@ -5858,6 +5855,10 @@ MonoBehaviour:
   - {fileID: 1455912914}
   - {fileID: 1530770964}
   projectileSound: {fileID: 8300000, guid: 5e1a9f876d3dafd47bc6b3dde25135fa, type: 3}
+  range: 1
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!114 &1088074359
 MonoBehaviour:
   m_ObjectHideFlags: 0
