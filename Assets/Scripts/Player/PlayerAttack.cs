@@ -48,8 +48,6 @@ public class PlayerAttack : MonoBehaviour
         Waves[FindWave()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
     }
 
-
-    //fix multiple targets damage deal!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private IEnumerator Attack()
     {
         Collider2D[] objectsHit = Physics2D.OverlapBoxAll(boxCollider.bounds.center + transform.right * range * Mathf.Sign(transform.localScale.x),

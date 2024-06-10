@@ -156,6 +156,15 @@ MonoBehaviour:
   numberOfFlashes: 3
   hitSound: {fileID: 8300000, guid: 41b3db18e389a464da57cc13049e290f, type: 3}
   deathSound: {fileID: 8300000, guid: 13ab71b1338584b4b8031373d7fdeacf, type: 3}
+  deathLayer:
+    serializedVersion: 2
+    m_Bits: 128
+  components:
+  - {fileID: 208187434618832394}
+  - {fileID: 208187434618832389}
+  - {fileID: 208187434618832388}
+  - {fileID: 208187434618832391}
+  - {fileID: 208187434618832395}
 --- !u!114 &208187434618832394
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +186,6 @@ MonoBehaviour:
   boxCollider: {fileID: 208187434618832392}
   range: 1
   area: {fileID: 0}
-  speed: 0
 --- !u!114 &208187434618832389
 MonoBehaviour:
   m_ObjectHideFlags: 0

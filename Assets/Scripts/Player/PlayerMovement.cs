@@ -1,20 +1,30 @@
-﻿using UnityEngine;
+﻿using Unity.Mathematics;
+using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Constants")]
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask wallLayer;
-    [SerializeField] private float coueteeTime;
-    private float coueteeTimeTimer = 0;
-    private Rigidbody2D body;
-    private Animator anim;
-    private BoxCollider2D boxCollider;
+    [SerializeField] private float coyoteTime;
+    [SerializeField] private int extraJumps;
+    [SerializeField] private float WallJumpX;
+    [SerializeField] private float WallJumpY;
+    private int extraJumpsCounter;
+    private float coyoteTimer;
     private float wallJumpCooldown;
     private float horizontalInput;
-    private PlayerAttack playerAttack;
+    [Header("Layers")]
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask wallLayer;
+    [Header("Audio")]
+    [SerializeField] private AudioClip jumpSound;
 
+
+    private PlayerAttack playerAttack;
+    private BoxCollider2D boxCollider;
+    private Rigidbody2D body;
+    private Animator anim;
 
     private void Awake()
     {
@@ -23,78 +33,85 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
         playerAttack = GetComponent<PlayerAttack>();
-}
+    }
 
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
 
         //Flip player when moving left-right
-        
+        if(horizontalInput > 0.01f)
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        else if(horizontalInput < -0.01f)
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+
 
         //Set animator parameters
         anim.SetBool("run", horizontalInput != 0);
         anim.SetBool("grounded", isGrounded());
         anim.SetBool("fall", body.velocity.y < 0);
 
-        if (!isGrounded())
-        {
-            coueteeTimeTimer -= Time.deltaTime;
-        }
-        else
-        {
-            coueteeTimeTimer = coueteeTime; 
-        }
+        //Jump
+        if (Input.GetKeyDown(KeyCode.Space))
+            Jump();
 
-        //Wall jump logicS
-        if (wallJumpCooldown > 0.2f)
-        {
-            if (playerAttack.GetCooldawn() * 1.1f < playerAttack.GetTimer())
-            {
-                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-                if (horizontalInput > 0.01f)
-                    transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
-                else if (horizontalInput < -0.01f)
-                    transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
-            }
+        //Adjustable jump height
+        if (Input.GetKeyUp(KeyCode.Space) && body.velocity.y > 0)
+            body.velocity = new Vector2(body.velocity.x, body.velocity.y / 2);
 
-            if (onWall() && !isGrounded())
-            {   
-                body.gravityScale = 0;
-                body.velocity = Vector2.zero;
-            }
-            else
-                body.gravityScale = 5;
-
-            if (Input.GetKey(KeyCode.Space))
-                Jump();
-        }
-        else
-            wallJumpCooldown += Time.deltaTime;
-    }
-
-
-    //добавить погрешность при прыжках с уступа
-    private void Jump()
-    {
         if (onWall() && !isGrounded())
         {
-            if (horizontalInput == 0)
+            body.gravityScale = 0;
+            body.velocity = Vector2.zero;
+        }
+        else
+        {
+            body.gravityScale = 7;
+            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+            if (isGrounded())
             {
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
-                print("nice");
-                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x) * transform.localScale.x, transform.localScale.y, transform.localScale.z);
+                coyoteTimer = coyoteTime;
+                extraJumpsCounter = extraJumps;
             }
             else
-                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+            {
+                coyoteTimer -= Time.deltaTime;
+            }
+        }
+    }
 
-            wallJumpCooldown = 0;
-        }
-        else if (coueteeTimeTimer > 0)
+    private void Jump()
+    {
+        if (coyoteTimer < 0 && !onWall() && extraJumpsCounter <= 0) return;
+
+        SoundManager.instance.PlaySound(jumpSound);
+
+        if (onWall()) 
+            WallJump();
+        else
         {
-            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            if (isGrounded())
+                body.velocity = new Vector2(body.velocity.x, jumpPower);
+            else
+            {
+                if(coyoteTimer > 0) 
+                    body.velocity = new Vector2(body.velocity.x, jumpPower);
+                else if(extraJumpsCounter > 0)
+                {
+                    body.velocity = new Vector2(body.velocity.x, jumpPower);
+                    extraJumpsCounter--;
+                }
+                
+            }
+            coyoteTimer = 0;
         }
-        coueteeTimeTimer = coueteeTime;
+    }
+
+    //looks pretty dummy, gotta find better solution
+    private void WallJump()
+    {
+        body.AddForce(new Vector2(-Mathf.Sign(transform.localScale.x) * WallJumpX, WallJumpY));
+        wallJumpCooldown = 0;
     }
 
 
@@ -105,13 +122,13 @@ public class PlayerMovement : MonoBehaviour
     }
     private bool onWall()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, new Vector3(boxCollider.bounds.size.x, boxCollider.bounds.size.y-0.5f,
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, new Vector3(boxCollider.bounds.size.x, boxCollider.bounds.size.y - 0.5f,
             boxCollider.bounds.size.z), 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
     }
     public bool canAttack()
     {
-        return  !onWall();
+        return !onWall() || isGrounded();
     }
 
     public void setVelosity0()
