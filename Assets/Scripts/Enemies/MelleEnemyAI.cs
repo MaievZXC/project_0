@@ -12,7 +12,7 @@ public class MelleEnemyAI : MonoBehaviour
     [SerializeField] private LayerMask playerLayer;
     [SerializeField] private BoxCollider2D boxCollider;
     [SerializeField] private float range;
-    [SerializeField] private GameObject area;
+    private AgroWallDetector area;
 
     private float currentAttackCooldawn = -1000;
 
@@ -31,6 +31,7 @@ public class MelleEnemyAI : MonoBehaviour
     private void Start()
     {
         anim = GetComponent<Animator>();
+        area = transform.GetChild(0).GetComponent<AgroWallDetector>();
 
     }
 
@@ -93,8 +94,6 @@ public class MelleEnemyAI : MonoBehaviour
         return hit.collider;
         
     }
-
-    //private bool PlayerInArea() => area.
 
     private IEnumerator Attack()
     {
